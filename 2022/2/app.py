@@ -1,5 +1,3 @@
-elves = list()
-
 points_1: dict = {
   "X": 1,
   "Y": 2,
