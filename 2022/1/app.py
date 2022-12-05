@@ -1,6 +1,6 @@
 elves = list()
 
-with open("./day_1_input.txt", "r") as input:
+with open("./input.txt", "r") as input:
   cur_elf_cal = 0
   for line in input:
     try:
