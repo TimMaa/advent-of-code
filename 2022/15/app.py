@@ -1,7 +1,5 @@
-import re, sys
+import re
 
-min_x = sys.maxsize
-max_x = -sys.maxsize
 sensors = []
 beacons = []
 
@@ -40,14 +38,6 @@ with open("./input.txt", "r") as input:
   for line in input:
     sx, sy, bx, by = map(int, re.findall("-*\d+", line))
     dis = calc_dis(sx, sy, bx, by)
-    if sx - dis < min_x:
-      min_x = sx - dis
-    if bx - dis < min_x:
-      min_x = bx - dis
-    if sx + dis > max_x:
-      max_x = sx + dis
-    if bx + dis > max_x:
-      max_x = bx + dis
     sensors.append([sx, sy, dis])
     beacons.append((bx, by))
 
