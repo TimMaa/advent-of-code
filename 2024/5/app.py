@@ -5,29 +5,21 @@ not_ok = 0
 
 
 def order_page(order: list, update: list):
-    relevant_orders = list(
-        filter(lambda o: o[0] in update and o[1] in update, order))
-    new_order = []
-    for ro in relevant_orders:
-        # if ro[0] not in new_order:
-        #   new_order.append(ro[0])
-        # if ro[1] in new_order:
-        #   new_order.remove(ro[1])
-        #   new_order.append(ro[1])
-        if ro[1] in new_order:
-            if ro[0] in new_order:
-                if new_order.index(ro[0]) > new_order.index(ro[1]):
-                    new_order.remove(ro[0])
-                    new_order.insert(new_order.index(ro[1]), ro[0])
-            else:
-                new_order.insert(new_order.index(ro[1]), ro[0])
-
+    new_update = []
+    for p in update:
+        target_index = -1
+        relevant_orders = list(filter(lambda o: o[0] == p, order))
+        for ro in relevant_orders:
+            if ro[1] in new_update:
+                cond_idx = new_update.index(ro[1])
+                if cond_idx < target_index or target_index == -1:
+                    target_index = cond_idx
+        if target_index == -1:
+            new_update.append(p)
         else:
-            if ro[0] not in new_order:
-                new_order.append(ro[0])
-            new_order.append(ro[1])
-    print(new_order[round((len(update)-1)/2)])
-    return new_order[round((len(update)-1)/2)]
+            new_update.insert(target_index, p)
+
+    return new_update[round((len(update)-1)/2)]
 
 
 with open("./input.txt", "r") as input:
