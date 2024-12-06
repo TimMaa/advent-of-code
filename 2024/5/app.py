@@ -8,10 +8,9 @@ def order_page(order: list, update: list):
     new_update = []
     for p in update:
         target_index = -1
-        relevant_orders = list(filter(lambda o: o[0] == p, order))
-        for ro in relevant_orders:
-            if ro[1] in new_update:
-                cond_idx = new_update.index(ro[1])
+        for o in order:
+            if o[0] == p and o[1] in new_update:
+                cond_idx = new_update.index(o[1])
                 if cond_idx < target_index or target_index == -1:
                     target_index = cond_idx
         if target_index == -1:
