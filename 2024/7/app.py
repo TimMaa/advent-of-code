@@ -8,11 +8,13 @@ def run_permutations(operators, result, base, operands):
 
     for p in permutations:
         p_result = base
-        for i, o in enumerate(p):
+        for o, x in zip(p, operands):
             if o == operator.concat:
-                p_result = int(o(str(p_result), str(operands[i])))
+                p_result = int(o(str(p_result), str(x)))
             else:
-                p_result = o(p_result, operands[i])
+                p_result = o(p_result, x)
+            if p_result > result:
+                break
         if p_result == result:
             return result
 
