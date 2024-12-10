@@ -20,39 +20,41 @@ x_params = {
     (-1, 1): [(1, 1), (-2, 0)],
 }
 
+array = []
 
-def search_word(match_word, arr, dir, start, w_idx):
-    if w_idx == len(match_word):
+
+def search_word(match_word, dir, spot, w_idx):
+    if spot[0] not in range(0, len(array)) or spot[1] not in range(0, len(array[spot[0]])):
+        return False
+
+    if array[spot[0]][spot[1]] != match_word[w_idx]:
+        return False
+
+    if w_idx == len(match_word) - 1:
         return True
 
-    new_l, new_c = map(sum, zip(start, dir))
-
-    return search_word(match_word, arr, dir, (new_l, new_c), w_idx+1) if new_l in range(0, len(arr)) and new_c in range(0, len(arr[0])) and arr[new_l][new_c] == match_word[w_idx] else False
+    return search_word(match_word, dir, tuple(map(sum, zip(spot, dir))), w_idx+1)
 
 
 with open("./input.txt", "r") as input:
-    array = []
     for line in input:
         array.append([l for l in line.strip()])
 
     cnt = 0
     x_cnt = 0
 
-    for l_idx, line in enumerate(array):
-        for c_idx, char in enumerate(line):
-            if char == "X":
-                for dir in directions:
-                    if search_word("XMAS", array, dir, (l_idx, c_idx), 1):
-                        cnt += 1
-            if char == "M":
-                for dir in directions:
-                    if search_word("MAS", array, dir, (l_idx, c_idx), 1):
-                        x_param = x_params[dir]
-                        new_l, new_c = tuple(
-                            map(sum, zip((l_idx, c_idx), x_param[1])))
-                        if new_l in range(0, len(array)) and new_c in range(0, len(array[0])) and array[new_l][new_c] == "M":
-                            if search_word("MAS", array, x_param[0], (new_l, new_c), 1):
-                                x_cnt += 1
+    for l_idx in range(0, len(array)):
+        for c_idx in range(0, len(array[l_idx])):
+            for dir in directions:
+                if search_word("XMAS", dir, (l_idx, c_idx), 0):
+                    cnt += 1
+                if search_word("MAS", dir, (l_idx, c_idx), 0):
+                    x_dir = x_params[dir]
+                    new_spot = tuple(
+                        map(sum, zip((l_idx, c_idx), x_dir[1])))
+                    if search_word("MAS", x_dir[0], new_spot, 0):
+                        x_cnt += 1
 
     print(cnt)
+    # Answer is 31 too high, should be 1871. Am I double counting somewhere?
     print(x_cnt)
