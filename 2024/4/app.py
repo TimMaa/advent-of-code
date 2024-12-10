@@ -10,14 +10,14 @@ directions = [
 ]
 
 x_params = {
-    (0, 1): [(1, 0), (-1, 1)],
-    (1, 1): [(1, -1), (0, 2)],
-    (1, 0): [(0, -1), (1, 1)],
-    (1, -1): [(-1, -1), (2, 0)],
-    (0, -1): [(-1, 0), (1, -1)],
-    (-1, -1): [(-1, 1), (0, -2)],
-    (-1, 0): [(0, 1), (-1, -1)],
-    (-1, 1): [(1, 1), (-2, 0)],
+    (0, 1): (1, 0),
+    (1, 1): (1, -1),
+    (1, 0): (0, -1),
+    (1, -1): (-1, -1),
+    (0, -1): (-1, 0),
+    (-1, -1): (-1, 1),
+    (-1, 0): (0, 1),
+    (-1, 1): (1, 1),
 }
 
 array = []
@@ -48,13 +48,12 @@ with open("./input.txt", "r") as input:
             for dir in directions:
                 if search_word("XMAS", dir, (l_idx, c_idx), 0):
                     cnt += 1
-                if search_word("MAS", dir, (l_idx, c_idx), 0):
+                if abs(sum(dir)) != 1 and search_word("MAS", dir, (l_idx, c_idx), 0):
                     x_dir = x_params[dir]
-                    new_spot = tuple(
-                        map(sum, zip((l_idx, c_idx), x_dir[1])))
-                    if search_word("MAS", x_dir[0], new_spot, 0):
+                    offset = tuple(x-y for x, y in zip(dir, x_dir))
+                    new_spot = tuple(map(sum, zip((l_idx, c_idx), offset)))
+                    if search_word("MAS", x_dir, new_spot, 0):
                         x_cnt += 1
 
     print(cnt)
-    # Answer is 31 too high, should be 1871. Am I double counting somewhere?
     print(x_cnt)
