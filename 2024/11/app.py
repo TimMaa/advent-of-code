@@ -1,4 +1,4 @@
-def apply_rules(stone: int):
+def apply_rules(stone):
     if stone == 0:
         return [1]
 
@@ -9,7 +9,7 @@ def apply_rules(stone: int):
     return [stone * 2024]
 
 
-def merge_dicts(a: dict[int, int], b: dict[int, int]):
+def merge_dicts(a, b):
     for k, v in b.items():
         a[k] = a[k] + v if k in a.keys() else v
     return a
