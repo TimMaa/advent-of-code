@@ -2,27 +2,19 @@ machines = {1: {}}
 cost_a = 3
 cost_b = 1
 
-def dfs(machine, current_vertex, visited, cost):
-    # Overshot
-    if current_vertex[0] > machine["Prize"][0] or current_vertex[1] > machine["Prize"][1] or cost > 400:
-        return None
 
-    if current_vertex == machine["Prize"]:
-        return visited, cost
+def calculate_steps(a, b, p):
+    det = a[0] * b[1] - a[1] * b[0]
 
-    visited.append(current_vertex)
-    a = tuple(map(sum, zip(current_vertex, machine["A"])))
-    b = tuple(map(sum, zip(current_vertex, machine["B"])))
+    if det == 0:
+        return 0, 0
 
-    # Check for paths through b first, as it would generally be cheaper
-    if b not in visited:
-        path = dfs(machine, b, visited, cost + cost_b)
-        if path:
-            return path
-    if a not in visited:
-        path = dfs(machine, a, visited, cost + cost_a)
-        if path:
-            return path
+    det_ax = p[0] * b[1] - p[1] * b[0]
+    det_ay = a[0] * p[1] - a[1] * p[0]
+    x = det_ax / det
+    y = det_ay / det
+
+    return (int(x), int(y)) if x.is_integer() and y.is_integer() else (0, 0)
 
 
 with open("./input.txt", "r") as input:
@@ -38,12 +30,18 @@ with open("./input.txt", "r") as input:
         else:
             p, x, y = l.split(" ")
             machines[cnt][p[0:len(p)-1]] = (int(x[2:len(x)-1]), int(y[2:]))
+            offset = 10000000000000
+            machines[cnt]["Prize2"] = (
+                int(x[2:len(x)-1]) + offset, int(y[2:]) + offset)
 
-# Part 1
-total = 0
+total_part1 = 0
+total_part2 = 0
+
 for k, machine in machines.items():
-    if (machine["A"][0] + machine["B"][0]) * 100 > machine["Prize"][0] and (machine["A"][1] + machine["B"][1]) * 100 > machine["Prize"][1]:
-      path = dfs(machine, (0,0), [], 0)
-      if path:
-          total += path[1]
-print(total)
+    x, y = calculate_steps(machine["A"], machine["B"], machine["Prize"])
+    total_part1 += x * cost_a + y * cost_b
+    x, y = calculate_steps(machine["A"], machine["B"], machine["Prize2"])
+    total_part2 += x * cost_a + y * cost_b
+
+print(total_part1)
+print(total_part2)
